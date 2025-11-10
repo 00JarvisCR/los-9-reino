@@ -54,3 +54,15 @@ Nodo* Arbol::get_raiz(){
 	return this->reino_1;
 }
 
+void Arbol::resetear(){
+	this->reino_1->set_se_jugo(false);
+	this->reino_2->set_se_jugo(false);
+	this->reino_3->set_se_jugo(false);
+	this->reino_4->set_se_jugo(false);
+	this->reino_5->set_se_jugo(false);
+	this->reino_6->set_se_jugo(false);
+	this->reino_7->set_se_jugo(false);
+	this->reino_8->set_se_jugo(false);
+	this->reino_9->set_se_jugo(false);
+}
+

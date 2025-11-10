@@ -185,6 +185,9 @@ void TorresHanoi::jugar(Jugador*& jugador) {
 		} else if(opcion == 2) {
 			cout << "Te has rendido. -20 puntos" << endl;
 			jugador->restarPuntos(20);
+			int vidas = jugador->get_vidas();
+			vidas -= 1;
+			jugador->set_vidas(vidas);
 			jugando = false;
 		} else {
 			cout << "Opcion invalida. Intenta de nuevo." << endl;

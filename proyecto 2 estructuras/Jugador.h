@@ -12,7 +12,7 @@ private:
 	string id;
 	
 public:
-	Jugador(string nombre, string id);
+	Jugador(string nombre, string id, int puntos, int vidas);
 	
 	void aumentarPuntos(int puntos_de_juego); // solamente se le pasa el atributo de los puntos del juego
 	void restarPuntos(int puntos_de_juego); // solamente se le pasa el atributo de los puntos del juego

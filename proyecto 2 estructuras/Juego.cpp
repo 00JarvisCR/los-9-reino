@@ -5,14 +5,15 @@ Juego::Juego() {
 }
 
 void Juego::jugar() {
-	Nodo* actual = this->arbol.get_raiz(); // se inicializa el nodo actual como la raiz para empezar el juego
+	int opcion; // para interactuar con el el juego
 	
 	cout << "Bienvenido al Juego de los 9 reinos." << endl;
-	cout << "Actualmente te encuentras en el reino " << actual->get_id() << endl;
 	
 	cout << "\n-Respecto vayas avanzando en los juego se te abriran caminos para elejir." << endl;
 	
-	cout << "\n-si llegas a menos de -50 perderas el juego y\ntendras que empezar desde el inicio." << endl;
+	cout << "\n-Si llegas a menos de -50 perderas el juego y\ntendras que empezar desde el inicio." << endl;
+	
+	cout << "\n-Si pierdes todas tus vidas perderas el juego y\ntendras que empezar desde el inicio." << endl;
 	
 	cout << "\n-Para poder ganar tiene que llegar hasta el ultimo juego\nno importa que camino elijas." << endl;
 	
@@ -26,54 +27,33 @@ void Juego::jugar() {
 	Utilidades::pausar("");
 	Utilidades::limpiar();
 	
-	Jugador* jugador = registrarse();
-	
-	if(jugador->get_id() == "" or jugador->get_nombre() == ""){
-		cout << "Error: jugador no reconocido" << endl;
-		return;
-	}
-	
-	Utilidades::pausar();
-	Utilidades::limpiar();
-
-	do{
-		int opcion = opciones(actual, jugador);
+	do {
+		opcion = menu_inicial();
 		
 		switch (opcion) {
 		case 1:
-			Utilidades::limpiar();
-			cual_jugar(actual, jugador);
+			opc_jugar();
 			break;
 			
 		case 2:
-			if (!actual->get_se_jugo()){
-				cout << "\nTienes que pasar este nivel para poder avanzar" << endl;
-			}
-			else if(actual->get_id() == 9 and jugador->get_puntos() >= 150){
-				cout << "" << endl;
-			}
-			else{
-				Utilidades::limpiar();
-				actual = avanzar(actual);
-			}
+			Utilidades::limpiar();
+			cout << this->lista.mejoresJugadores() << endl;
 			break;
 			
 		case 3:
-			if (actual->get_id() == 1) {
-				cout << "\nNo puedes retroceder mas" << endl;
-			}
-			else{
-				actual = retroceder(actual);
-			}
+			cout << "Saliendo..." << endl;
+			return; // se sale
 			break;
 			
 		default:
 			break;
 		}
-		cout << "\n";
 		Utilidades::pausar();
 		Utilidades::limpiar();
 	} while(true);
+	
+	
+	
 }
 
 void Juego::cual_jugar(Nodo* actual, Jugador*& jugador) {
@@ -90,20 +70,22 @@ void Juego::cual_jugar(Nodo* actual, Jugador*& jugador) {
 	MemoriaPares reino_8;
 	AdivinaNumero reino_9;
 	
+	
 	if (!actual->get_se_jugo()){
 		switch(id_actual){
 		case 1:
 			reino_1.jugar(jugador);
-			cout << "tic tak tou" <<endl;
+			//cout << "tic tak tou" <<endl;
 			break;
 			
 		case 2:
 			reino_2.jugar(jugador);
-			cout << "torres" << endl;
+			//cout << "torres" << endl;
 			break;
 			
 		case 3:
 			reino_3.jugar(jugador);
+			//cout << "secuencia" << endl;
 			break;
 			
 		case 4:
@@ -128,6 +110,7 @@ void Juego::cual_jugar(Nodo* actual, Jugador*& jugador) {
 			
 		case 9:
 			reino_9.jugar(jugador);
+			jugador->set_puntos(190);
 			break;
 			
 		default:
@@ -149,6 +132,18 @@ Nodo* Juego::avanzar(Nodo* actual) {
 	
 	Nodo* siguiente; // el nodo al cual se va tomar el valor del que se va avanzar
 	
+	cout << endl;
+	cout << "      3 ----> 5 -----> 7 -------> 9       1. Tic-Tac-Toe            \n";
+	cout << "      ^   /            ^      /           2. Torres de Hanoi        \n";
+	cout << "      |  /             |     /            3. Sudoku 4x4             \n";
+	cout << "1 --> 2 /              |    /             4. Recuerda la Secuencia  \n";
+	cout << "      |                |   /              5. Busca Minas            \n";
+	cout << "      v                |  /               6. Ahorcado               \n";
+	cout << "      4 ----> 6 -----> 8 /                7. Cuatro en Raya         \n";
+	cout << "                                          8. Juego Memoria de Pares \n";
+	cout << "                                          9. Adivina el Numero      \n";
+	
+	cout << "---------------------------------------------------------------------" << endl;
 	cout << "Haz terminado este reino\nAhora elije a cual reino quieres continuar\n\n" << endl;
 	
 	mostrarSiguientes(actual);
@@ -212,12 +207,12 @@ Nodo* Juego::retroceder(Nodo* actual) {
 }
 
 Jugador* Juego::registrarse() {
-	cout << "Identificate:\n" << endl;
+	cout << "\n\nIdentificate:\n" << endl;
 	string nombre = Utilidades::in_string("Ingresa tu nombre: ");
 	string id = Utilidades::in_string("Ingrese su ID: ");
 	cout << "\n\n";
 	
-	Jugador* jugador = new Jugador(nombre, id);
+	Jugador* jugador = new Jugador(nombre, id, 0, 3);
 	
 	if (this->lista.existeJugador(jugador)) {
 		cout << "ID encontrado." << endl;
@@ -225,6 +220,7 @@ Jugador* Juego::registrarse() {
 		cout << "Se te han reseteado los puntos." << endl;
 		
 		jugador = this->lista.buscar(id); // se usan los atributos oficiales de ese id
+		jugador->set_vidas(3);
 		jugador->set_puntos(0); // se resetean lo puntos por volver a jugar desde el inicio
 	}
 	else{
@@ -236,6 +232,10 @@ Jugador* Juego::registrarse() {
 	}
 	
 	cout << "\n\n";
+	this->arbol.resetear(); // pone todos los nodos como no jugados
+	
+	Archivos::GuardarJugadores(this->lista); // se guarda en los archivos
+	
 	return jugador;
 }
 
@@ -250,17 +250,42 @@ int Juego::opciones(Nodo* actual, Jugador*& jugador) {
 	cout << "      4 ----> 6 -----> 8 /                7. Cuatro en Raya         \n";
 	cout << "                                          8. Juego Memoria de Pares \n";
 	cout << "                                          9. Adivina el Numero      \n";
+	cout << "---------------------------------------------------------------------" << endl;
 	
-	cout << "\nActualmente te encuentras en el Reino " << actual->get_id() << ": " << actual->get_nombre_minijuego() << endl;
+	cout << "Actualmente te encuentras en el Reino " << actual->get_id() << ": " << actual->get_nombre_minijuego() << endl;
 	cout << "Puntos de " << jugador->get_nombre() << ": " << jugador->get_puntos() << endl;
+	cout << "Vidas de " << jugador->get_nombre() << ": " << jugador->get_vidas() << endl;
 	
 	cout << "\n\nElije una opcion:\n" << endl;
-	cout << "- (1) Jugar" << endl;
-	cout << "- (2) avanzar" << endl;
-	cout << "- (3) retroceder" << endl;
+	cout << "- (1) Jugar " << actual->get_nombre_minijuego() << endl;
+	cout << "- (2) Avanzar" << endl;
+	cout << "- (3) Retroceder" << endl;
+	cout << "- (4) Salir" << endl;
+	
 	int opcion;
 	do {
-		opcion = Utilidades::in_int("ingrese la opcion correspondiente: ");
+		opcion = Utilidades::in_int("Ingrese la opcion correspondiente: ");
+		
+		if (opcion > 4 or opcion < 1){
+			cout << "\n\nIngrese una opcion valida..." << endl;
+		}
+		else{
+			return opcion;
+		}
+	} while(true);
+	
+}
+
+int Juego::menu_inicial() {
+	cout << "ELije una opcion:\n" << endl;
+	cout << "- (1) Entrar al Juego" << endl;
+	cout << "- (2) Ver top 3 Mejores Jugadores" << endl;
+	cout << "- (3) Salir\n" << endl;
+	
+	int opcion;
+	
+	do {
+		opcion = Utilidades::in_int("Ingrese la opcion correspondiente: ");
 		
 		if (opcion > 3 or opcion < 1){
 			cout << "\n\nIngrese una opcion valida..." << endl;
@@ -269,5 +294,82 @@ int Juego::opciones(Nodo* actual, Jugador*& jugador) {
 			return opcion;
 		}
 	} while(true);
+}
+
+void Juego::opc_jugar() {
+	Nodo* actual = this->arbol.get_raiz(); // se inicializa el nodo actual como la raiz para empezar el juego
 	
+	Jugador* jugador = registrarse();
+	
+	if(jugador->get_id() == "" or jugador->get_nombre() == ""){
+		cout << "Error: jugador no reconocido" << endl;
+		return;
+	}
+	
+	Utilidades::pausar();
+	Utilidades::limpiar();
+	
+	do{
+		int opcion = opciones(actual, jugador);
+		
+		switch (opcion) {
+		case 1:
+			Utilidades::limpiar();
+			cual_jugar(actual, jugador);
+			
+			if (jugador->get_vidas() <= 0) {
+				cout << "\n\nTe quedaste sin vidas, vuelve a intentarlo." << endl;
+				return; // se sale
+			}
+			
+			if (jugador->get_puntos() <= -50) {
+				cout << "\n\nTus puntos llegaron al minimo, vuelve a intentarlo." << endl;
+				return; // se sale
+			}
+			
+			break;
+			
+		case 2:
+			if (!actual->get_se_jugo()){
+				cout << "\nTienes que pasar este nivel para poder avanzar" << endl;
+			}
+			else if(actual->get_id() == 9 and jugador->get_puntos() >= 150){
+				Utilidades::limpiar();
+				cout << "Haz ganado el juego, felicidades!!\n\n" << endl;
+				
+				Archivos::GuardarJugadores(this->lista); // se guarda la lista con el jugador actualizado
+				
+				return; // se sale
+			}
+			else if(actual->get_id() == 9 and jugador->get_puntos() < 150) {
+				Utilidades::limpiar();
+				cout << "Tienes que tener minimo 150 puntos para terminar el Juego" <<endl;
+				cout << "\n-Te recomiendo devolverte y buscar otros minijuegos\nque no hayas jugado par ganar puntos" << endl;
+			}
+			else{
+				Utilidades::limpiar();
+				actual = avanzar(actual);
+			}
+			break;
+			
+		case 3:
+			if (actual->get_id() == 1) {
+				cout << "\nNo puedes retroceder mas" << endl;
+			}
+			else{
+				actual = retroceder(actual);
+			}
+			break;
+			
+		case 4:
+			cout << "\n\nSaliendo de Los Nueve Reinos...\n" << endl;
+			return;
+			
+		default:
+			break;
+		}
+		cout << "\n";
+		Utilidades::pausar();
+		Utilidades::limpiar();
+	} while(true);
 }

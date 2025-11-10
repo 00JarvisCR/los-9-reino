@@ -7,9 +7,7 @@ using namespace std;
 
 TicTacToe::TicTacToe() {
 	srand(time(0));
-	inicializarTablero();
 	jugadorActual = 'X'; // Jugador humano es 'X'
-	juegoTerminado = false;
 }
 
 void TicTacToe::inicializarTablero() {
@@ -21,9 +19,9 @@ void TicTacToe::inicializarTablero() {
 }
 
 void TicTacToe::mostrarTablero() {
-	cout << "\n  0   1   2" << endl;
+	cout << "\n  1   2   3" << endl;
 	for(int i = 0; i < 3; i++) {
-		cout << i << " ";
+		cout << i+1 << " ";
 		for(int j = 0; j < 3; j++) {
 			cout << tablero[i][j];
 			if(j < 2) cout << " | ";
@@ -35,6 +33,10 @@ void TicTacToe::mostrarTablero() {
 }
 
 bool TicTacToe::hacerMovimiento(int fila, int columna) {
+	// Convertir de 1-3 a 0-2 para el array interno
+	fila--;
+	columna--;
+	
 	if(fila < 0 || fila > 2 || columna < 0 || columna > 2) {
 		return false;
 	}
@@ -145,70 +147,92 @@ void TicTacToe::jugar(Jugador*& jugador) {
 	cout << "=== TRES EN RAYA ===" << endl;
 	cout << "Premio: si ganas +30 puntos, si pierdes -15 puntos" << endl;
 	cout << "Tu eres 'X', la computadora es 'O'" << endl;
+	cout << "Las posiciones van del 1 al 3" << endl;
 	
-	// Mostrar tablero inicial vacío
-	mostrarTablero();
+	bool juegoCompleto = false;
 	
-	while(!juegoTerminado) {
+	while(!juegoCompleto) {
+		// Reiniciar el juego para cada partida
+		inicializarTablero();
+		jugadorActual = 'X';
+		bool juegoTerminado = false;
 		
+		cout << "\n--- NUEVA PARTIDA ---" << endl;
+		mostrarTablero();
 		
-		if(jugadorActual == 'X') {
-			// Turno del jugador humano
-			int fila, columna;
-			cout << "Tu turno (X) \n";
-			fila = Utilidades::in_int("ingrese la fila: ");
-			columna = Utilidades::in_int("ingrese la columna: ");
-			
-			if(!hacerMovimiento(fila, columna)) {
-				cout << "\nMovimiento invalido. Intenta de nuevo." << endl;
-				continue;
-			}
-			
-			// Verificar si el jugador ganó después de su movimiento
-			if(verificarGanador()) {
+		while(!juegoTerminado) {
+			if(jugadorActual == 'X') {
+				// Turno del jugador humano
+				int fila, columna;
+				cout << "Tu turno (X) \n";
+				fila = Utilidades::in_int("ingrese la fila (1-3): ");
+				columna = Utilidades::in_int("ingrese la columna (1-3): ");
+				
+				// Validar entrada
+				if(fila < 1 || fila > 3 || columna < 1 || columna > 3) {
+					cout << "\nPosición inválida. Usa números del 1 al 3." << endl;
+					continue;
+				}
+				
+				if(!hacerMovimiento(fila, columna)) {
+					cout << "\nCasilla ocupada. Intenta de nuevo." << endl;
+					continue;
+				}
+				
+				// Verificar si el jugador ganó después de su movimiento
+				if(verificarGanador()) {
+					mostrarTablero();
+					cout << "\nFelicidades! Has ganado! +30 puntos\n" << endl;
+					jugador->aumentarPuntos(30);
+					juegoTerminado = true;
+					juegoCompleto = true;
+					break;
+				}
+				
+				// Verificar empate después del movimiento del jugador
+				if(verificarEmpate()) {
+					mostrarTablero();
+					cout << "\nEmpate! Se reinicia el juego.\n" << endl;
+					juegoTerminado = true;
+					break; // Sale del juego actual pero no del bucle principal
+				}
+				
+				cambiarJugador();
+				
+			} else {
+				// Turno de la computadora
+				cout << "\nTurno de la computadora (O)..." << endl;
+				movimientoComputadora();
+				
+				// Mostrar tablero después del movimiento de la computadora
 				mostrarTablero();
-				cout << "\n¡Felicidades! ¡Has ganado! +30 puntos\n" << endl;
-				jugador->aumentarPuntos(30);
-				juegoTerminado = true;
-				break;
+				
+				// Verificar si la computadora ganó
+				if(verificarGanador()) {
+					cout << "La computadora gana! -15 puntos\n" << endl;
+					jugador->restarPuntos(15);
+					
+					int vidas = jugador->get_vidas();
+					vidas -= 1;
+					jugador->set_vidas(vidas);
+					
+					juegoTerminado = true;
+					juegoCompleto = true;
+					break;
+				}
+				
+				// Verificar empate después del movimiento de la computadora
+				if(verificarEmpate()) {
+					cout << "Empate! Se reinicia el juego." << endl;
+					juegoTerminado = true;
+					break; // Sale del juego actual pero no del bucle principal
+				}
+				
+				cambiarJugador();
 			}
-			
-			// Verificar empate después del movimiento del jugador
-			if(verificarEmpate()) {
-				mostrarTablero();
-				cout << "\n¡Empate! No hay cambios en los puntos.\n" << endl;
-				juegoTerminado = true;
-				break;
-			}
-			
-			cambiarJugador();
-			
-		} else {
-			// Turno de la computadora
-			cout << "\n\nTurno de la computadora (O)..." << endl;
-			movimientoComputadora();
-			
-			// Mostrar tablero después del movimiento de la computadora
-			mostrarTablero();
-			
-			// Verificar si la computadora ganó
-			if(verificarGanador()) {
-				cout << "¡La computadora gana! -15 puntos\n" << endl;
-				jugador->restarPuntos(15);
-				juegoTerminado = true;
-				break;
-			}
-			
-			// Verificar empate después del movimiento de la computadora
-			if(verificarEmpate()) {
-				cout << "¡Empate! Vuelve a intentarlo" << endl;
-				juegoTerminado = true;
-				break;
-			}
-			
-			cambiarJugador();
 		}
 	}
 	
 	cout << "\nPuntos actuales de " << jugador->get_nombre() << ": " << jugador->get_puntos() << endl;
+	cout << "Vidas restantes: " << jugador->get_vidas() << endl;
 }

@@ -4,6 +4,9 @@
 #include "Jugador.h"
 #include <list>
 
+#include <vector>
+#include <algorithm>
+
 class ListaJugador {
 private:
 	list<Jugador*> listaJugadores;
@@ -13,6 +16,9 @@ public:
 	Jugador* buscar(string id);
 	string listar();
 	bool existeJugador(Jugador*& jugador);
+	list<Jugador*> getLista() const;
+	
+	string mejoresJugadores(); // usando shell sort
 };
 
 #endif

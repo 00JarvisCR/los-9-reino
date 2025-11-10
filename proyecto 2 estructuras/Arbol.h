@@ -8,15 +8,6 @@ using namespace std;
 
 class Arbol {
 private:
-	// se inicializan como constantes cada nodo para despues tener formado el arbol estructurado como se pide
-
-	/*
-	string titulos[9] = {"Tic-Tac-Toe", "Torres de Hanoi", "Sudoku 4x4", "Recuerda la Secuencia", "Buscaminas", "El Ahorcado", "Cuatro en Raya", "Juego de memoria de pares", "Adivina el Numero"};
-	int id[9] = {1, 2, 3, 4, 5, 6, 7, 8, 9};
-	int puntos[9] = {30, 40, 40, 40, 50, 40, 30, 30, 50};
-	*/
-	
-public:
 	Nodo* reino_1;
 	Nodo* reino_2;
 	Nodo* reino_3;
@@ -27,10 +18,13 @@ public:
 	Nodo* reino_8;
 	Nodo* reino_9;
 	
+public:	
 	~Arbol();
 	Arbol();
 	
 	Nodo* get_raiz(); // para obtener el reino 1
+	
+	void resetear(); // para poner todos los nodos que ya han sido jugados como no jugados, para cuando se vuelva a jugar
 
 };
 

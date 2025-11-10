@@ -103,7 +103,7 @@ double Utilidades::in_float(const std::string& mensaje, double min, double max) 
 std::string Utilidades::in_string(const std::string& mensaje) {
 	std::string valor;
 	std::cout << mensaje;
-	std::getline(std::cin, valor);
+	std::cin >> valor;
 	return valor;
 }
 

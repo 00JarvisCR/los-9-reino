@@ -8,7 +8,6 @@ class TicTacToe {
 private:
 	char tablero[3][3];
 	char jugadorActual;
-	bool juegoTerminado;
 	
 	void inicializarTablero();
 	void mostrarTablero();
