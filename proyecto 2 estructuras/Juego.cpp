@@ -11,7 +11,7 @@ void Juego::jugar() {
 	
 	cout << "\n-Respecto vayas avanzando en los juego se te abriran caminos para elejir." << endl;
 	
-	cout << "\n-Si llegas a menos de -50 perderas el juego y\ntendras que empezar desde el inicio." << endl;
+	cout << "\n-Si llegas a menos de -50 puntos perderas el juego y\ntendras que empezar desde el inicio." << endl;
 	
 	cout << "\n-Si pierdes todas tus vidas perderas el juego y\ntendras que empezar desde el inicio." << endl;
 	
@@ -75,21 +75,22 @@ void Juego::cual_jugar(Nodo* actual, Jugador*& jugador) {
 		switch(id_actual){
 		case 1:
 			reino_1.jugar(jugador);
-			//cout << "tic tak tou" <<endl;
+			cout << "tic tak tou" <<endl;
 			break;
 			
 		case 2:
 			reino_2.jugar(jugador);
-			//cout << "torres" << endl;
+			cout << "torres" << endl;
 			break;
 			
 		case 3:
 			reino_3.jugar(jugador);
-			//cout << "secuencia" << endl;
+			cout << "sudoku" << endl;
 			break;
 			
 		case 4:
 			reino_4.jugar(jugador);
+			cout << "secuencia" << endl;
 			break;
 			
 		case 5:
@@ -110,7 +111,6 @@ void Juego::cual_jugar(Nodo* actual, Jugador*& jugador) {
 			
 		case 9:
 			reino_9.jugar(jugador);
-			jugador->set_puntos(190);
 			break;
 			
 		default:
@@ -144,7 +144,7 @@ Nodo* Juego::avanzar(Nodo* actual) {
 	cout << "                                          9. Adivina el Numero      \n";
 	
 	cout << "---------------------------------------------------------------------" << endl;
-	cout << "Haz terminado este reino\nAhora elije a cual reino quieres continuar\n\n" << endl;
+	cout << "Haz terminado el reino " << actual->get_id() << ".\nAhora elije a cual reino quieres continuar.\n\n" << endl;
 	
 	mostrarSiguientes(actual);
 	

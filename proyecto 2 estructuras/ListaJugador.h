@@ -12,10 +12,13 @@ private:
 	list<Jugador*> listaJugadores;
 public:
 	ListaJugador();
+	
 	void agregar(Jugador* jugador);
 	Jugador* buscar(string id);
-	string listar();
+	//string listar();
+	
 	bool existeJugador(Jugador*& jugador);
+	
 	list<Jugador*> getLista() const;
 	
 	string mejoresJugadores(); // usando shell sort

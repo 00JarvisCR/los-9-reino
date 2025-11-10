@@ -40,17 +40,17 @@ string ListaJugador::mejoresJugadores() {
 		return "No hay jugadores registrados.";
 	}
 	
-	// Convertir la lista a vector para facilitar el ordenamiento
+	// se convierte la lista a vector para que sea mas facil de ordenar con shell sort
 	vector<Jugador*> jugadoresVector(listaJugadores.begin(), listaJugadores.end());
 	int n = jugadoresVector.size();
 	
-	// Implementación de Shell Sort por puntos (descendente)
+	// Implementación de Shell Sort por puntos
 	for (int gap = n / 2; gap > 0; gap /= 2) {
 		for (int i = gap; i < n; i++) {
 			Jugador* temp = jugadoresVector[i];
 			int j;
 			
-			// Ordenar de mayor a menor (descendente por puntos)
+			// Ordenar de mayor a menor
 			for (j = i; j >= gap && jugadoresVector[j - gap]->get_puntos() < temp->get_puntos(); j -= gap) {
 				jugadoresVector[j] = jugadoresVector[j - gap];
 			}
@@ -58,10 +58,9 @@ string ListaJugador::mejoresJugadores() {
 		}
 	}
 	
-	// Construir el string con los top 3
 	string resultado = "TOP 3 MEJORES JUGADORES\n\n";
 	
-	int limite = (n < 3) ? n : 3; // Si hay menos de 3, mostrar los que hay
+	int limite = (n < 3) ? n : 3; // muestra los que hay si hay menos de 3
 	
 	for (int i = 0; i < limite; i++) {
 		resultado += to_string(i + 1) + ". " + 
